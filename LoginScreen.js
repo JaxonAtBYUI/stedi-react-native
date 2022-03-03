@@ -2,9 +2,33 @@ import React from "react";
 import { SafeAreaView, StyleSheet, TextInput, View, Text, Alert} from "react-native";
 import { Card, ListItem, Button, Icon } from 'react-native-elements';
 
-const LoginScreen = () => {
+const LoginScreen = (props) => {
   const [phone, onChangeText] = React.useState(null);
   const [OTP, onChangeNumber] = React.useState(null);
+  const getOTP = () => {
+    fetch('https://dev.stedi.me/twofactorlogin/' + phone, {method: 'POST'})
+  }
+  const login = async () => {
+
+    fetch('https://dev.stedi.me/twofactorlogin',
+    {method: 'POST',
+    body: JSON.stringify({"phoneNumber": phone, "oneTimePassword": OTP})}
+    ).then((response) => response.text())
+    .then((authKey) => {validateToken(authKey)})
+  }
+  const validateToken = (authkey) => {
+    fetch('https://dev.stedi.me/validate/' + authkey, {method: 'GET'})
+    .then((response) => response.text())
+    .then((email) => {
+      if(email.substring(0, 6) == "<html>") {
+        Alert.alert("Invalid Login")
+      }
+      else {
+        props.setUserLoggedIn(true)
+        props.email(email)
+      }
+    })
+  }
 
   return (
 
@@ -24,7 +48,7 @@ const LoginScreen = () => {
       <View style={styles.container}>
         <Button style={styles.loginButton}
         title="Send OTP"
-        onPress={() => fetch('https://dev.stedi.me/twofactorlogin/' + phone, {method: 'POST'})}
+        onPress={getOTP}
         />
       </View>
       <TextInput
@@ -39,8 +63,8 @@ const LoginScreen = () => {
       />
       <View style={styles.container}>
         <Button style={styles.loginButton}
-        title="Send OTP"
-        onPress={() => Alert.alert('NOT YET IMPLEMENTED')}
+        title="Login"
+        onPress={() => login()}
         />
       </View>
     </SafeAreaView>

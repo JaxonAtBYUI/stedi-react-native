@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Accelerometer } from 'expo-sensors';
 
-export default function SettingsScreen() {
+export default function SettingsScreen(props) {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -17,7 +17,7 @@ export default function SettingsScreen() {
   })
   return(
     <View style={styles.container}>
-      <Text style={styles.message}>This is the settings page</Text>
+      <Text style={styles.message}>Hello {props.email}</Text>
     </View>
   )
 
