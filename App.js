@@ -61,8 +61,7 @@ export default function App() {
   }
   else {
     return (
-      <LoginScreen setUserLoggedIn={setUserLoggedIn}
-                   email={updateEmail} />
+      <LoginScreen setUserLoggedIn={setUserLoggedIn} email={updateEmail} />
     )
   }
 
