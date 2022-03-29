@@ -3,8 +3,8 @@ import { SafeAreaView, StyleSheet, TextInput, View, Text, Alert} from "react-nat
 import { Card, ListItem, Button, Icon } from 'react-native-elements';
 
 const LoginScreen = (props) => {
-  const [phone, onChangeText] = React.useState(null);
-  const [OTP, onChangeNumber] = React.useState(null);
+  const [phone, onChangePhone] = React.useState(null);
+  const [OTP, onChangeOTP] = React.useState(null);
   
   const getOTP = () => {
     fetch('https://dev.stedi.me/twofactorlogin/' + phone, {method: 'POST'})
@@ -22,7 +22,7 @@ const LoginScreen = (props) => {
     fetch('https://dev.stedi.me/validate/' + authkey, {method: 'GET'})
     .then((response) => {const statusCode = response.status
                          const email = response.text()
-                         return[statusCode, response]})
+                         return Promise.all([statusCode, email])})
     .then(([statusCode, email]) => {
       if(statusCode != 200) {
         Alert.alert("Invalid Login")
@@ -42,7 +42,7 @@ const LoginScreen = (props) => {
       </View>
       <TextInput
         style={styles.input}
-        onChangeText={onChangeText}
+        onChangeText={onChangePhone}
         value={phone}
         placeholder="Phone Number"
         clearButtonMode={'while-editing'}
@@ -57,7 +57,7 @@ const LoginScreen = (props) => {
       </View>
       <TextInput
         style={styles.input}
-        onChangeText={onChangeNumber}
+        onChangeText={onChangeOTP}
         value={OTP}
         placeholder="One Time Password"
         keyboardType="numeric"
